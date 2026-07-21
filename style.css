@@ -1,0 +1,176 @@
+/* Core Page Styling & Ambient Dark Background */
+body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0b0f19;
+    /* Soft colorful gradients behind the glass card for contrast */
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.1) 0%, transparent 40%);
+    background-attachment: fixed;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Container Glassmorphism Card */
+body > * {
+    max-width: 650px;
+    width: 100%;
+}
+
+/* Merging sections into a clean unified glass container */
+header, section, footer {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
+}
+
+/* Typography & Visual Hierarchy */
+h1, h2 {
+    color: #ffffff;
+    margin-top: 0;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    background: linear-gradient(to right, #6366f1, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+p {
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* List Formatting */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+li:last-child {
+    margin-bottom: 0;
+}
+
+/* Custom list bullet accent */
+li::before {
+    content: "•";
+    color: #6366f1;
+    font-weight: bold;
+    font-size: 1.25rem;
+    position: absolute;
+    left: 4px;
+    top: -2px;
+}
+
+strong {
+    color: #ffffff;
+}
+
+/* Navigation Links Styling */
+.nav-links {
+    margin-top: 15px;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(99, 102, 241, 0.2);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: rgba(99, 102, 241, 0.4);
+    border-color: rgba(99, 102, 241, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Clean up HR tags since we are using glass containers */
+hr {
+    display: none;
+}
+
+/* Footer Specifics */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.875rem;
+}
+/* --- Treasure Hunt Class Activity Styles --- */
+
+/* Special Gold Button for the Map */
+.gold-btn {
+    background-color: rgba(234, 179, 8, 0.2) !important;
+    border-color: rgba(234, 179, 8, 0.4) !important;
+}
+
+.gold-btn:hover {
+    background-color: rgba(234, 179, 8, 0.4) !important;
+    border-color: rgba(234, 179, 8, 0.8) !important;
+}
+
+/* Filler cards to create height so the page can scroll */
+.filler-card {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: dashed; /* Gives a "hidden/under-construction" vibe */
+    opacity: 0.5;
+}
+
+/* Treasure card styling */
+.treasure-card {
+    background: rgba(234, 179, 8, 0.05) !important; /* Slight gold tint */
+    border-color: rgba(234, 179, 8, 0.2) !important;
+    text-align: center;
+}
+
+.treasure-chest {
+    margin-top: 20px;
+}
+
+.treasure-chest img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+/* fun hover effect for the kids */
+.treasure-chest img:hover {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* Smooth scrolling makes the page jump slide nicely */
+html {
+    scroll-behavior: smooth;
+}
