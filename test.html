@@ -193,7 +193,7 @@
     function startTest() {
       document.getElementById('overlay').style.display = 'none';
       if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen().catch(() => {});
       }
       startTimer();
     }
@@ -247,9 +247,11 @@
         return;
       }
 
+      // Stop timers & listeners
       clearInterval(timerInterval);
       window.removeEventListener('blur', recordViolation);
 
+      // Calculate score
       let score = 0;
       questions.forEach((q, index) => {
         const selected = document.querySelector(`input[name="q${index}"]:checked`);
@@ -258,14 +260,14 @@
         }
       });
 
-      const pct = (score / questions.length) * 100;
+      const pct = ((score / questions.length) * 100).toFixed(1);
 
       // Populate hidden input fields for Netlify Form Submission
       document.getElementById('hidden-score').value = `${score} / ${questions.length}`;
       document.getElementById('hidden-percentage').value = `${pct}%`;
       document.getElementById('hidden-violations').value = violations;
 
-      // Submit form data asynchronously to Netlify
+      // Submit form data asynchronously via fetch to Netlify
       const quizForm = document.getElementById('quiz-form');
       const formData = new FormData(quizForm);
 
@@ -275,7 +277,7 @@
         body: new URLSearchParams(formData).toString()
       })
       .then(() => {
-        // Show result on screen after success
+        // Hide form and display results on screen
         quizForm.style.display = 'none';
         const resultsDiv = document.getElementById('results');
         resultsDiv.style.display = 'block';
