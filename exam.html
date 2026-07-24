@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFETH CBT Portal</title>
+    
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; padding-top: 80px; }
+        
+        /* Sticky Timer Bar across the top of the student's screen */
+        .timer-strip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #343a40;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .timer-display {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffc107;
+            background: #212529;
+            padding: 5px 15px;
+            border-radius: 4px;
+            border: 1px solid #ffc107;
+        }
+        
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .question-box { font-size: 1.2rem; margin-bottom: 15px; font-weight: 600; line-height: 1.6; }
+        .question-box img, .option-item img { max-width: 100%; height: auto; display: block; margin: 10px 0; border: 1px solid #dee2e6; border-radius: 4px; padding: 5px; background: #fff; }
+        .options-list { list-style: none; padding: 0; }
+        .option-item { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; margin-bottom: 10px; border-radius: 5px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; }
+        .option-item:hover { background: #e9ecef; border-color: #0056b3; }
+        .option-item label { display: flex; align-items: center; width: 100%; cursor: pointer; }
+        .option-item input { margin-right: 15px; transform: scale(1.2); cursor: pointer; }
+        .btn { background-color: #0056b3; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+        .btn:hover { background-color: #004085; }
+        .question-container { margin-bottom: 40px; border-bottom: 1px dashed #ccc; padding-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="timer-strip">
+    <div style="font-size: 1.1rem; font-weight: 600;">IFETH Assessment Infrastructure v1.1</div>
+    <div class="timer-display" id="clock">02:00</div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h2>IFETH Assessment Engine</h2>
+        <p><strong>Student:</strong> {{ student_name }} | <strong>Subject:</strong> Science & Mathematics</p>
+    </div>
+
+    <form id="examForm" action="/submit-exam" method="POST">
+        {% for q in questions %}
+        <div class="question-container">
+            <div class="question-box">
+                Question {{ loop.index }}: {{ q['question_text'] | safe }}
+            </div>
+            
+            {% if q['diagram_file'] %}
+                <img src="/static/question_images/{{ q['diagram_file'] }}" style="max-width: 100%; height: auto; display: block; margin: 15px 0;" alt="Question Diagram">
+            {% endif %}
+            
+            <ul class="options-list">
+                <li class="option-item">
+                    <label>
+                        <input type="radio" name="q_{{ q['id'] }}" value="A"> 
+                        <strong>A.&nbsp;</strong> {{ q['option_a'] | safe }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <label>
+                        <input type="radio" name="q_{{ q['id'] }}" value="B"> 
+                        <strong>B.&nbsp;</strong> {{ q['option_b'] | safe }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <label>
+                        <input type="radio" name="q_{{ q['id'] }}" value="C"> 
+                        <strong>C.&nbsp;</strong> {{ q['option_c'] | safe }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <label>
+                        <input type="radio" name="q_{{ q['id'] }}" value="D"> 
+                        <strong>D.&nbsp;</strong> {{ q['option_d'] | safe }}
+                    </label>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+
+        <div style="text-align: right; margin-top: 30px;">
+            <button type="submit" class="btn">Submit Examination</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Grab the dynamic duration parameter calculated by the backend server
+    // Using Jinja notation to inject the total minutes seamlessly into the script
+    let allocatedMinutes = {{ duration_mins }}; 
+    
+    // Convert those minutes directly into total seconds for the countdown ticker
+    let totalSeconds = allocatedMinutes * 60; 
+    
+    const clockDisplay = document.getElementById('clock');
+    const examForm = document.getElementById('examForm');
+
+    const countdown = setInterval(() => {
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+
+        // Formats numbers with a zero prefix if below 10
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        clockDisplay.innerText = `${minutes}:${seconds}`;
+
+        // Change clock color to flashing red when 30 seconds are left
+        if (totalSeconds <= 30) {
+            clockDisplay.style.color = '#dc3545';
+            clockDisplay.style.borderColor = '#dc3545';
+        }
+
+        if (totalSeconds <= 0) {
+            clearInterval(countdown);
+            alert("Time's up! Your examination papers are being collected automatically.");
+            examForm.submit(); // Forces form submission to Flask backend
+        }
+
+        totalSeconds--;
+    }, 1000);
+</script>
+
+</body>
+</html>
