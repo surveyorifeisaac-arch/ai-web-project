@@ -73,10 +73,11 @@
 
     <script src="{{ url_for('static', filename='quill.js') }}"></script>
     <script>
-        // Shared configuration for the mini-editors toolbar layout
+        // Shared configuration for the mini-editors toolbar layout (includes subscript and superscript)
         const miniToolbarOptions = [
             ['bold', 'italic'],
-            ['image'], // Keeps option choices clean and uncluttered while enabling diagrams
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            ['image'], 
             ['clean']
         ];
 
@@ -109,8 +110,19 @@
             };
         }
 
-        // Initialize all 5 editors independently
-        const q_editor = new Quill('#editor_q', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] } });
+        // Initialize all 5 editors independently with superscript & subscript enabled
+        const q_editor = new Quill('#editor_q', { 
+            theme: 'snow', 
+            modules: { 
+                toolbar: [
+                    ['bold', 'italic', 'underline'], 
+                    [{ 'script': 'sub'}, { 'script': 'super' }], 
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
+                    ['image'], 
+                    ['clean']
+                ] 
+            } 
+        });
         const a_editor = new Quill('#editor_a', { theme: 'snow', modules: { toolbar: miniToolbarOptions } });
         const b_editor = new Quill('#editor_b', { theme: 'snow', modules: { toolbar: miniToolbarOptions } });
         const c_editor = new Quill('#editor_c', { theme: 'snow', modules: { toolbar: miniToolbarOptions } });
